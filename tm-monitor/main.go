@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	cmn "github.com/tendermint/tmlibs/common"
-	"github.com/tendermint/tmlibs/log"
+	"github.com/tendermint/tendermint/libs/log"
 	monitor "github.com/tendermint/tools/tm-monitor/monitor"
 )
 

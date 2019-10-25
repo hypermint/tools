@@ -6,12 +6,12 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	crypto "github.com/tendermint/go-crypto"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/libs/log"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	rpc_client "github.com/tendermint/tendermint/rpc/lib/client"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"github.com/tendermint/tmlibs/events"
-	"github.com/tendermint/tmlibs/log"
 	em "github.com/tendermint/tools/tm-monitor/eventmeter"
 )
 
@@ -54,13 +54,13 @@ func NewNode(rpcAddr string, options ...func(*Node)) *Node {
 
 func NewNodeWithEventMeterAndRpcClient(rpcAddr string, em eventMeter, rpcClient rpc_client.HTTPClient, options ...func(*Node)) *Node {
 	n := &Node{
-		rpcAddr:   rpcAddr,
-		em:        em,
-		rpcClient: rpcClient,
-		Name:      rpcAddr,
-		quit:      make(chan struct{}),
+		rpcAddr:                  rpcAddr,
+		em:                       em,
+		rpcClient:                rpcClient,
+		Name:                     rpcAddr,
+		quit:                     make(chan struct{}),
 		checkIsValidatorInterval: 5 * time.Second,
-		logger: log.NewNopLogger(),
+		logger:                   log.NewNopLogger(),
 	}
 
 	for _, option := range options {
@@ -133,7 +133,7 @@ func newBlockCallback(n *Node) em.EventCallbackFunc {
 		n.logger.Info("new block", "height", block.Height, "numTxs", block.NumTxs)
 
 		if n.blockCh != nil {
-			n.blockCh <- *block
+			n.blockCh <- block
 		}
 	}
 }
@@ -217,7 +217,7 @@ func (n *Node) checkIsValidator() {
 		for _, v := range validators {
 			key, err1 := n.getPubKey()
 			// TODO: use bytes.Equal
-			if err1 == nil && v.PubKey == key {
+			if err1 == nil && v.PubKey.Equals(key) {
 				n.IsValidator = true
 			}
 		}

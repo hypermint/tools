@@ -11,7 +11,7 @@ import (
 	metrics "github.com/rcrowley/go-metrics"
 	client "github.com/tendermint/tendermint/rpc/lib/client"
 	"github.com/tendermint/tmlibs/events"
-	"github.com/tendermint/tmlibs/log"
+	"github.com/tendermint/tendermint/libs/log"
 )
 
 const (
